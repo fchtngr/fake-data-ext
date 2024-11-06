@@ -33,7 +33,7 @@ export function getGenerators(locale, country) {
         iban: {
           title: 'IBAN',
           generator: faker.finance.iban,
-          config: { formatted: true, countryCode: 'AT' },
+          config: { formatted: true, countryCode: country },
         },
       },
     },

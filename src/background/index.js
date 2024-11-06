@@ -21,6 +21,19 @@ const contextMenu = {
         },
       },
     },
+    address: {
+      title: 'Address',
+      menues: {
+        street: {
+          title: 'Street',
+          generator: faker.location.street,
+        },
+        city: {
+          title: 'City',
+          generator: faker.location.city,
+        },
+      },
+    },
     finance: {
       title: 'Finance',
       menues: {
@@ -41,6 +54,25 @@ const contextMenu = {
         url: {
           title: 'URL',
           generator: faker.internet.url,
+        },
+      },
+    },
+    number: {
+      title: 'Numbers',
+      menues: {
+        shortNumber: {
+          title: '1000 <= x <= 10000',
+          generator: faker.number.int,
+          config: {min: 1000, max: 10000}
+        }
+      }
+    },
+    loremIpsum: {
+      title: 'Lorem Ipsum',
+      menues: {
+        loremShort: {
+          title: 'Text',
+          generator: faker.lorem.text,
         },
       },
     },

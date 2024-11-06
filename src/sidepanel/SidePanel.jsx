@@ -1,10 +1,18 @@
 import { useState, useEffect } from 'react'
 import leven from 'leven'
 import './SidePanel.css'
-import { menues } from '../menueDefinition.js'
+import { getGenerators } from '../menueDefinition.js'
+import LocaleSelectBox from './LocaleSelectBox'
+import CountrySelectBox from './CountrySelectBox'
 
 export const SidePanel = () => {
-  const flattenedMenus = ((menues) => {
+  const [clickedElementId, setClickedElementId] = useState(null)
+  const [sortedMenus, setSortedMenus] = useState([])
+  const [menues, setMenues] = useState({})
+  const [locale, setLocale] = useState('de-AT')
+  const [country, setCountry] = useState('AT')
+
+  function flattenGenerators(menues) {
     const result = []
 
     Object.keys(menues).forEach((categoryKey) => {
@@ -22,11 +30,7 @@ export const SidePanel = () => {
     })
 
     return result
-  })(menues)
-
-  const [clickedElementId, setClickedElementId] = useState(null)
-  const [sortedMenus, setSortedMenus] = useState(flattenedMenus)
-  const link = 'https://github.com/guocaoyi/create-chrome-ext'
+  }
 
   function sendFill(menuItem) {
     if (!menuItem.generator) {
@@ -52,6 +56,14 @@ export const SidePanel = () => {
     return value.toLowerCase().replace(/\s/g, '')
   }
 
+  function handleLocaleChange(newLocale) {
+    setLocale(newLocale)
+  }
+
+  function handleCountryChange(newCountry) {
+    setCountry(newCountry)
+  }
+
   useEffect(() => {
     // Listen for messages from the content script
     const handleMessage = (message, sender, sendResponse) => {
@@ -69,7 +81,12 @@ export const SidePanel = () => {
   }, [])
 
   useEffect(() => {
-    const sorted = [...flattenedMenus].sort((a, b) => {
+    setMenues(getGenerators(locale, country))
+    setSortedMenus([])
+  }, [locale, country])
+
+  useEffect(() => {
+    const sorted = [...flattenGenerators(menues)].sort((a, b) => {
       const id = normalizeString(clickedElementId)
       const distanceA = leven(id, normalizeString(a.menu))
       const distanceB = leven(id, normalizeString(b.menu))
@@ -81,7 +98,8 @@ export const SidePanel = () => {
   return (
     <main>
       <h3>Fake data...</h3>
-
+      <LocaleSelectBox onLocaleChange={handleLocaleChange} />
+      <CountrySelectBox onCountryChange={handleCountryChange} />
       <div>
         <h4>Last input field</h4>
         <span>{clickedElementId ?? '-'}</span>

@@ -1,99 +1,93 @@
-import { faker } from '@faker-js/faker'
+import { faker, generateMersenne32Randomizer } from '@faker-js/faker'
 
-console.log('background is running')
-
-const menues = [
-  {
-    title: 'Company',
-    children: [
-      {
-        title: 'Name',
-        generator: faker.company.name,
+const contextMenu = {
+  title: 'Fake data...',
+  menues: {
+    company: {
+      title: 'Company',
+      menues: {
+        fullName: {
+          title: 'Full Name',
+          generator: faker.company.name,
+        },
       },
-    ],
+    },
+    person: {
+      title: 'Person',
+      menues: {
+        fullName: {
+          title: 'Full Name',
+          generator: faker.person.fullName,
+        },
+      },
+    },
+    finance: {
+      title: 'Finance',
+      menues: {
+        iban: {
+          title: 'IBAN (AT)',
+          generator: faker.finance.iban,
+          config: { formatted: true, countryCode: 'AT' },
+        },
+      },
+    },
+    internet: {
+      title: 'Internet',
+      menues: {
+        email: {
+          title: 'Email',
+          generator: faker.internet.email,
+        },
+        url: {
+          title: 'URL',
+          generator: faker.internet.url,
+        },
+      },
+    },
   },
-]
+}
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: 'root',
-    title: 'Fill with Random Data',
+    title: contextMenu.title,
     contexts: ['editable'],
   })
 
-  /* company -------------------- */
-  chrome.contextMenus.create({
-    id: 'company',
-    parentId: 'root',
-    title: 'Company',
-    contexts: ['editable'],
-  })
+  Object.keys(contextMenu.menues).forEach((parentKey) => {
+    const parent = contextMenu.menues[parentKey]
+    chrome.contextMenus.create({
+      id: parentKey,
+      parentId: 'root',
+      title: parent.title,
+      contexts: ['editable'],
+    })
 
-  /* person ---------------------*/
-  chrome.contextMenus.create({
-    id: 'person',
-    parentId: 'root',
-    title: 'Person',
-    contexts: ['editable'],
-  })
-
-  chrome.contextMenus.create({
-    id: 'person_name',
-    parentId: 'person',
-    title: 'Name',
-    contexts: ['editable'],
-  })
-
-  /* finance ------------------ */
-
-  chrome.contextMenus.create({
-    id: 'finance',
-    parentId: 'root',
-    title: 'Finance',
-    contexts: ['editable'],
-  })
-
-  chrome.contextMenus.create({
-    id: 'finance_iban',
-    parentId: 'finance',
-    title: 'IBAN',
-    contexts: ['editable'],
-  })
-
-  chrome.contextMenus.create({
-    id: 'company_name',
-    parentId: 'company',
-    title: 'Random Name',
-    contexts: ['editable'],
-  })
-
-  chrome.contextMenus.create({
-    id: 'email',
-    parentId: 'root',
-    title: 'Email',
-    contexts: ['editable'],
+    Object.keys(parent.menues).forEach((childKey) => {
+      const child = parent.menues[childKey]
+      chrome.contextMenus.create({
+        id: `${parentKey}-${childKey}`,
+        parentId: parentKey,
+        title: child.title,
+        contexts: ['editable'],
+      })
+    })
   })
 })
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  console.log(info, tab);
-  console.log(info.targetElementId);
-  switch (info.menuItemId) {
-    case 'company_name':
-      runScript(info, tab, faker.company.name())
-      break
-    case 'person_name':
-      runScript(info, tab, faker.person.fullName())
-      break
-    case 'email':
-      runScript(info, tab, faker.internet.email())
-      break
-    case 'finance_iban':
-      runScript(info, tab, faker.finance.iban({ formatted: true, countryCode: 'AT' }))
-      break
+  const [parentKey, childKey] = info.menuItemId.split('-')
+  const menues = contextMenu.menues
+  const generator = menues[parentKey].menues[childKey].generator
+  const config = menues[parentKey].menues[childKey].config
+
+  if (config) {
+    runScript(info, tab, generator(config))
+  } else {
+    runScript(info, tab, generator())
   }
 })
 
 function runScript(info, tab, value) {
-  chrome.tabs.sendMessage(tab.id, {value: value}, {frameId: info.frameId});
+  chrome.tabs.sendMessage(tab.id, { value: value }, { frameId: info.frameId })
 }

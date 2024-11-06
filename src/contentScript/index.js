@@ -1,19 +1,15 @@
-console.info('contentScript is running')
-
-var clickedEl = null
+var clickedElement = null
 
 document.addEventListener(
   'contextmenu',
   function (event) {
-    clickedEl = event.target
+    clickedElement = event.target
   },
   true,
 )
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  console.log(clickedEl, request)
-
-  clickedEl.value = request.value
+  clickedElement.value = request.value
   let event = new Event('input', { bubbles: true })
-  elem.dispatchEvent(event)
+  clickedElement.dispatchEvent(event)
 })

@@ -72,6 +72,24 @@ export const menues = {
         title: 'Full Name',
         generator: faker.person.fullName,
       },
+      firstName: {
+        title: 'First Name',
+        generator: faker.person.firstName,
+      },
+      lastName: {
+        title: 'Last Name',
+        generator: faker.person.lastName,
+      },
+    },
+  },
+  phone: {
+    title: 'Phone',
+    menues: {
+      phonenumber: {
+        title: 'Phone number',
+        generator: faker.phone.number,
+        config: { style: 'international' },
+      },
     },
   },
 }

@@ -11,7 +11,11 @@ document.addEventListener(
 document.addEventListener('click', (event) => {
   if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
     const clickedElementId = event.target.id
-    chrome.runtime.sendMessage({ type: 'updateClickedElement', value: clickedElementId })
+    chrome.runtime
+      .sendMessage({ type: 'updateClickedElement', value: clickedElementId })
+      .catch((err) => {
+        //ignore
+      })
   }
 })
 

@@ -44,6 +44,14 @@ export const SidePanel = () => {
     })
   }
 
+  function normalizeString(value) {
+    if (!value) {
+      return ''
+    }
+
+    return value.toLowerCase().replace(/\s/g, '')
+  }
+
   useEffect(() => {
     // Listen for messages from the content script
     const handleMessage = (message, sender, sendResponse) => {
@@ -62,55 +70,67 @@ export const SidePanel = () => {
 
   useEffect(() => {
     const sorted = [...flattenedMenus].sort((a, b) => {
-      console.log('leven', a, b, clickedElementId)
-      const id = clickedElementId ?? ''
-      const distanceA = leven(id, a.menu)
-      const distanceB = leven(id, b.menu)
-      console.log('distance:', distanceA - distanceB)
+      const id = normalizeString(clickedElementId)
+      const distanceA = leven(id, normalizeString(a.menu))
+      const distanceB = leven(id, normalizeString(b.menu))
       return distanceA - distanceB
     })
-    setSortedMenus(sorted)
+    setSortedMenus(sorted.slice(0, 5))
   }, [clickedElementId])
 
   return (
     <main>
       <h3>Fake data...</h3>
-      <h4>Input: {clickedElementId ?? '-'}</h4>
 
-      <ul>
-        {sortedMenus.map((item, index) => (
-          <li key={index}>
-            <a onClick={() => sendFill(item)}>{item.name}</a>
-          </li>
-        ))}
-      </ul>
+      <div>
+        <h4>Last input field</h4>
+        <span>{clickedElementId ?? '-'}</span>
+      </div>
 
-      {/* <div>
-        {Object.keys(menues)
-          .sort()
-          .map((categoryKey) => {
-            const category = menues[categoryKey]
-            return (
-              <div key={categoryKey}>
-                <h4>{category.title}</h4>
-                <ul>
-                  {Object.keys(category.menues)
-                    .sort()
-                    .map((menuKey) => {
-                      const menu = category.menues[menuKey]
-                      return (
-                        <li>
-                          <a onClick={() => sendFill(menu)} key={menuKey}>
-                            {menu.title}
-                          </a>
-                        </li>
-                      )
-                    })}
-                </ul>
-              </div>
-            )
-          })}
-      </div> */}
+      <hr />
+      <div>
+        <h4>Suggested generator</h4>
+        <span class="info">Based on Levensthein distance between input id and generator name</span>
+        <ul>
+          {sortedMenus.map((item, index) => (
+            <li key={index}>
+              <a onClick={() => sendFill(item)}>{item.name}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <hr />
+      <div>
+        <h4>All generators</h4>
+
+        <ul>
+          {Object.keys(menues)
+            .sort()
+            .map((categoryKey) => {
+              const category = menues[categoryKey]
+              return (
+                <li key={categoryKey}>
+                  <span>{category.title}</span>
+                  <ul>
+                    {Object.keys(category.menues)
+                      .sort()
+                      .map((menuKey) => {
+                        const menu = category.menues[menuKey]
+                        return (
+                          <li>
+                            <a onClick={() => sendFill(menu)} key={menuKey}>
+                              {menu.title}
+                            </a>
+                          </li>
+                        )
+                      })}
+                  </ul>
+                </li>
+              )
+            })}
+        </ul>
+      </div>
     </main>
   )
 }

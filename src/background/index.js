@@ -121,5 +121,5 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 })
 
 function runScript(info, tab, value) {
-  chrome.tabs.sendMessage(tab.id, { value: value }, { frameId: info.frameId })
+  chrome.tabs.sendMessage(tab.id, { type: 'fillFromContextMenu', value: value }, { frameId: info.frameId })
 }

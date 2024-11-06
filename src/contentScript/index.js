@@ -1,12 +1,19 @@
-var clickedElement = null
+var contextMenuElement = null
 
 document.addEventListener(
   'contextmenu',
   function (event) {
-    clickedElement = event.target
+    contextMenuElement = event.target
   },
   true,
 )
+
+document.addEventListener('click', (event) => {
+  if (event.target.tagName === 'INPUT') {
+    const clickedElementId = event.target.id
+    chrome.runtime.sendMessage({ type: 'updateClickedElement', value: clickedElementId })
+  }
+})
 
 function replaceOrAppend(inputElement, newValue) {
   const start = inputElement.selectionStart
@@ -27,7 +34,13 @@ function dispatchInputEvent(inputElement) {
   inputElement.dispatchEvent(new Event('input', { bubbles: true }))
 }
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  replaceOrAppend(clickedElement, request.value)
-  dispatchInputEvent(clickedElement)
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === 'fillLastInput') {
+    const elem = document.getElementById(request.elementId)
+    replaceOrAppend(elem, request.value)
+    dispatchInputEvent(elem)
+  } else if (request.type === 'fillFromContextMenu') {
+    replaceOrAppend(contextMenuElement, request.value)
+    dispatchInputEvent(contextMenuElement)
+  }
 })

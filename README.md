@@ -1,11 +1,15 @@
 # fake-data-ext
 
-> a chrome extension tools built with Vite + React, and Manifest v3
+> a chrome extension to fill forms with random data using faker.js
+
+Need a random company name or an IBAN while testing your webapp? Say no more.
+
+This extension adds a context menu that lets you quickly generate random data for your inputs!
 
 ## Installing
 
 1. Check if your `Node.js` version is >= **14**.
-2. Change or configurate the name of your extension on `src/manifest`.
+2. Change or configure the name of your extension on `src/manifest`.
 3. Run `npm install` to install the dependencies.
 
 ## Developing

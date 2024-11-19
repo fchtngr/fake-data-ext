@@ -1,8 +1,8 @@
-import { Faker, allLocales } from '@faker-js/faker'
+import { Faker, allLocales, en } from '@faker-js/faker'
 
 export function getGenerators(locale, country) {
   const fakerLocale = allLocales[locale]
-  const faker = new Faker({ locale: [fakerLocale] })
+  const faker = new Faker({ locale: [fakerLocale, en] }) // use en as fallback
 
   return {
     address: {

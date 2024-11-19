@@ -64,8 +64,20 @@ export function getGenerators(locale, country) {
       title: 'Lorem Ipsum',
       menues: {
         loremShort: {
-          title: 'Text',
+          title: 'Random Text',
           generator: faker.lorem.text,
+        },
+        loremParagraph: {
+          title: 'Paragraph',
+          generator: faker.lorem.paragraph,
+        },
+        loremSlug: {
+          title: 'Slug',
+          generator: faker.lorem.slug,
+        },
+        loremWords: {
+          title: 'Words',
+          generator: faker.lorem.words,
         },
       },
     },

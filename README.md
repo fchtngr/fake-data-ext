@@ -2,9 +2,10 @@
 
 > a chrome extension to fill forms with random data using faker.js
 
+
 Need a random company name or an IBAN while testing your webapp? Say no more.
 
-This extension adds a context menu that lets you quickly generate random data for your inputs!
+This extension adds a sidebar menu that lets you quickly generate random data for your inputs!
 
 ## Installing
 
@@ -21,6 +22,14 @@ $ cd fake-data-ext
 
 $ npm run dev
 ```
+
+To test the extension you can also host a simple form locally with the command
+
+```shell
+$ npm run run-demo
+```
+
+The demo is then available under `http://localhost:3000/`
 
 ### Chrome Extension Developer Mode
 

@@ -1,8 +1,8 @@
-import { Faker, allLocales, en } from '@faker-js/faker'
+import { Faker, allLocales, en, base } from '@faker-js/faker'
 
 export function getGenerators(locale, country) {
   const fakerLocale = allLocales[locale]
-  const faker = new Faker({ locale: [fakerLocale, en] }) // use en as fallback
+  const faker = new Faker({ locale: [fakerLocale, en, base] })
 
   return {
     address: {
@@ -15,6 +15,22 @@ export function getGenerators(locale, country) {
         street: {
           title: 'Street',
           generator: faker.location.street,
+        },
+        buildingNumber: {
+          title: 'Building Number',
+          generator: faker.location.buildingNumber,
+        },
+        streetAddress: {
+          title: 'Street Address',
+          generator: faker.location.streetAddress,
+        },
+        country: {
+          title: 'Country',
+          generator: faker.location.country,
+        },
+        countryCode: {
+          title: 'Country code (ISO_3166-1)',
+          generator: faker.location.countryCode,
         },
       },
     },

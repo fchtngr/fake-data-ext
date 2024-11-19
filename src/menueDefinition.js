@@ -112,6 +112,14 @@ export function getGenerators(locale, country) {
           title: 'Last Name',
           generator: faker.person.lastName,
         },
+        jobTitle: {
+          title: 'Job Title',
+          generator: faker.person.jobTitle,
+        },
+        gender: {
+          title: 'Gender',
+          generator: faker.person.gender,
+        },
       },
     },
     phone: {
